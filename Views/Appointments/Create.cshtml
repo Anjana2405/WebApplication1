@@ -1,0 +1,67 @@
+﻿@model WebApplication1.Models.Appointment
+
+@{
+    ViewData["Title"] = "Create";
+}
+<h1>Create</h1>
+
+<h4>Appointment</h4>
+<hr />
+
+<div class="row">
+    <div class="col-md-4">
+        <form asp-action="Create">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="form-group">
+                @Html.DropDownList("docspeciality", null, "Select", new { @class = "form-control" })
+            </div>
+            <div id="selection" style="display:none">
+                <div class="form-group">
+                    <label asp-for="docID" class="control-label"></label>
+                    <select asp-for="docID" class="form-control" asp-items="ViewBag.docID">
+                        <option value="" required>Select</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label asp-for="ptID" class="control-label"></label>
+                    <select asp-for="ptID" class="form-control" asp-items="ViewBag.ptID">
+                        <option value="" required>Select</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label asp-for="date" class="control-label"></label>
+                    <input asp-for="date" class="form-control" />
+                    <span asp-validation-for="date" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <input type="submit" value="Create" class="btn btn-primary" />
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+
+<div>
+    <a asp-action="Index">Back to List</a>
+</div>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+<script>
+    $(document).ready(function () {
+        var url = '@Url.Action("FetchDocs")';
+        var doclist = $("#docID");
+        doclist.empty();
+        $("#docspeciality").change(function () {
+            var sp = $(this).val();
+            doclist.empty();
+            doclist.append($('<option></option>').text("Select").val("Select"));
+            $.getJSON(url, { splty: sp }, function (response) {
+                $.each(response, function (key, value) {
+                    doclist.append($('<option></option>')
+                        .val(value.attr)
+                        .text(value.text));
+                });
+            });
+            $("#selection").show()
+        })
+    })
+</script>
